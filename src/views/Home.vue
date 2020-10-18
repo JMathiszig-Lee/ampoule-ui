@@ -1,18 +1,38 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js + TypeScript App"/>
+    <h1>Welcome to the Drug/Ampoule selection evaluator</h1>
+    <p>
+      This is some copy explaining why this is an important thing and the value
+      of researching it and the methadology.
+    </p>
+    <h3>How this works</h3>
+    <p>We collect:</p>
+    <ul>
+      <li>Age range</li>
+      <li>Speciality</li>
+      <li>Grade/Years of experience</li>
+    </ul>
+    <div>
+      <router-link to="/session/new" tag="button" class="btn btn-info"
+        >Get Started</router-link
+      >
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import HelloWorld from '@/components/HelloWorld.vue' // @ is an alias to /src
 
-@Component({
-  components: {
-    HelloWorld
-  }
-})
-export default class Home extends Vue {}
+@Component
+export default class Home extends Vue { }
+
 </script>
+
+<style scoped lang="scss">
+.home {
+  text-align: left;
+  div {
+    text-align: center;
+  }
+}
+</style>
