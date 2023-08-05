@@ -44,13 +44,20 @@ const schema= [
       validation: 'required|email'
     }
   ]
-
+const config = {
+  headers:{
+    "Access-Control-Allow-Origin": "*"
+  }
+}
 function createUser(fields) {
   console.log(fields)
-  alert(JSON.stringify(fields)),
-  axios.post(process.env.VUE_APP_DJANGO_URL + '/register', {
-
+  axios.post(process.env.VUE_APP_DJANGO_URL + '/register/',{
+    years: fields.years,
+    speciality: fields.speciality,
+    email: fields.email
   })
+  .then(res => console.log(res))
+  .catch(err => console.log(err))
 }
 
 </script>

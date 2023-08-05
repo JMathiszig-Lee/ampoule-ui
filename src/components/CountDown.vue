@@ -21,6 +21,7 @@
 </template>
 
 <script>
+import { watch } from 'vue'
 // import { Vue } from 'vue-property-decorator'
 
 // import { Component, Prop, Vue } from 'vue-property-decorator'
@@ -34,36 +35,54 @@ export default {
     timeLimit: Number,
     timeLeft: Number
   },
-
-  get timeLeftString () {
-    if (this.timeLeft <= 0) {
-      return '0.000'
+  data (){
+    return {
+      timeLeftString: 0,
+      animationFraction: 1
     }
-    return this.timeLeft.toFixed(3)
   },
-
-  get animationFraction () {
+  methods:{
+    timeLefttoString () {
+    if (this.timeLeft <= 0) {
+      // return '0.000'
+      this.timeLeftString = '0.000'
+    }
+    // return this.timeLeft.toFixed(3)
+    // return this.timeLeft.toFixed(3)
+    this.timeLeftString = this.timeLeft.toFixed(3)
+  },
+  changeFraction () {
     const remaining = this.timeLeft * 1000
     const rawTimeFraction = remaining / this.timeLimit
     if (remaining <= 0) {
-      return '283'
+      // return '283'
+      this.animationFraction = 283
     }
-    return (rawTimeFraction - (1 / this.timeLimit) * (1 - rawTimeFraction)) * 283 + ' 283'
+    this.animationFraction = (rawTimeFraction - (1 / this.timeLimit) * (1 - rawTimeFraction)) * 283 + ' 283'
+    // return (rawTimeFraction - (1 / this.timeLimit) * (1 - rawTimeFraction)) * 283 + ' 283'
   },
-
-  get animationColour () {
+  animateColour () {
     const remaining = this.timeLeft
     if (remaining > 2) {
-      return 'green'
+      this.animationColour = 'green'
     }
-    if (remaining > 1) {
-      return 'orange'
+    else if (remaining > 1) {
+      this.animationColour =  'orange'
     }
-    if (remaining >= 0) {
-      return 'red'
+    else if (remaining >= 0) {
+      this.animationColour = 'red'
     }
-    return 'red'
+    // this.animationColour =  'red'
   }
+  },
+  watch : {
+    timeLeft() {
+      this.timeLefttoString()
+      this.changeFraction()
+      this.animateColour()
+    }
+  }
+  
 }
 </script>
 

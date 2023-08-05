@@ -20,7 +20,7 @@
 <script>
 import RunSet from '@/components/RunSet.vue'
 import { defineComponent } from 'vue'
-// import ProgressBar from '@/components/ProgressBar.vue'
+import ProgressBar from '@/components/ProgressBar.vue'
 // import { SetData, SetResult } from '@/types'
 import { watch } from 'vue'
 
@@ -44,7 +44,8 @@ export default defineComponent ({
   */
   name: 'Session',
   components : {
-    RunSet
+    RunSet,
+    ProgressBar
   },
   props:['setData'],
 
