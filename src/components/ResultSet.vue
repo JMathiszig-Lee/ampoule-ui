@@ -20,33 +20,42 @@
 
 <script lang="ts">
 import { Vue, Prop, Component } from 'vue-property-decorator'
-import CountDown from '@/components/CountDown.vue'
-import Ampoule from '@/components/Ampoule.vue'
+import CountDown from './components/CountDown.vue'
+import Ampoule from './components/Ampoule.vue'
+import { defineComponent } from 'vue'
 
 import { SetData, SetResult } from '@/types'
 
-@Component({
+// @Component({
+//   components: {
+//     CountDown,
+//     Ampoule
+//   }
+// })
+
+export default {
+  // @Prop() private setData!: SetData;
+  name: 'ResultSet',
+  props: {
+    setData: SetData
+  },
   components: {
     CountDown,
     Ampoule
-  }
-})
+  },
 
-export default class ResultSet extends Vue {
-  @Prop() private setData!: SetData;
-
-  loading = true;
-  active = false;
-  imgCount = 0;
-  timeLimit = 0;
-  startTime = 0;
-  timeLeft = 0;
-  tick = 0;
+  loading = true,
+  active = false,
+  imgCount = 0,
+  timeLimit = 0,
+  startTime = 0,
+  timeLeft = 0,
+  tick = 0,
 
   beforeMount () {
     this.timeLimit = this.setData.TimeLimit
     this.timeLeft = this.timeLimit / 1000
-  }
+  },
 
   startTimer (limit: number) {
     this.timeLimit = limit
@@ -55,7 +64,7 @@ export default class ResultSet extends Vue {
     this.tick = setInterval(() => {
       this.updateCountDown()
     }, 25)
-  }
+  },
 
   updateCountDown () {
     const remaining: number = this.startTime + this.timeLimit - new Date().getTime()
@@ -65,7 +74,7 @@ export default class ResultSet extends Vue {
       this.selectAmpoule('')
       clearInterval(this.tick)
     }
-  }
+  },
 
   imgLoaded () {
     this.imgCount++
@@ -77,7 +86,7 @@ export default class ResultSet extends Vue {
         this.imgCount = 0
       }, 1000)
     }
-  }
+  },
 
   selectAmpoule (id: string) {
     clearInterval(this.tick)

@@ -17,21 +17,14 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Vue, Component, Watch } from 'vue-property-decorator'
+<script>
 import RunSet from '@/components/RunSet.vue'
-import ProgressBar from '@/components/ProgressBar.vue'
+import { defineComponent } from 'vue'
+// import ProgressBar from '@/components/ProgressBar.vue'
+// import { SetData, SetResult } from '@/types'
+import { watch } from 'vue'
 
-import { SetData, SetResult } from '@/types'
-
-@Component({
-  components: {
-    RunSet,
-    ProgressBar
-  }
-})
-
-export default class Session extends Vue {
+export default defineComponent ({
   /* baseData: SetData = {
     SetId: '123456',
     TargetDrug: 'Fentanyl',
@@ -49,54 +42,39 @@ export default class Session extends Vue {
   targetList = ['Bupivicaine', 'Adrenaline', 'Dexamethasone', 'Midazolam', 'Meteraminol', 'Clonidine', 'Fentanyl']
   target = 'Fentanyl'
   */
+  name: 'Session',
+  components : {
+    RunSet
+  },
+  props:['setData'],
 
-  baseData: SetData = {
-    SetId: '',
-    TargetDrug: '',
-    TimeLimit: 0,
-    Ampoules: []
+  data() {
+    return {
+      baseData: {
+        SetId: '',
+        TargetDrug: '',
+        TimeLimit: 0,
+        Ampoules: []
+      },
+      sequence: 0,
+      loading: true,
+      pause: false
   }
-
-  sequence = 0
-  loading = true
-  paused = false
-
-  beforeMount () {
-    this.getRemote()
-  }
-
-  doPause () {
-    this.paused = !this.paused
-    this.baseData = {
-      SetId: '',
-      TargetDrug: '',
-      TimeLimit: 0,
-      Ampoules: []
-    }
-  }
-
-  @Watch('paused')
-  onPauseStateChange () {
+  watch(this.paused, (newX) => {
     if (!this.paused) {
       this.getRemote()
     }
-  }
-
-  /* get targetDrug () {
-    return this.baseData.TargetDrug
-  }
-
-  get ampoules () {
-    return this.baseData
-  } */
-
-  handleResult (result: SetResult) {
+  })
+ 
+  },
+  methods:{
+    handleResult (result) {
     result.SessionId = this.$route.params.SessionId
     result.Sequence = this.sequence
     result.Correct = (this.baseData.TargetDrug === result.SelectedAmpoule)
     // this.target = this.targetList[this.sequence]
 
-    const data: any = {
+    const data = {
       // eslint-disable-next-line
       set_id: result.SetId,
       time: result.Time,
@@ -112,7 +90,7 @@ export default class Session extends Vue {
     }
     console.log(data)
 
-    fetch('https://mysterious-taiga-04569.herokuapp.com/results/', {
+    fetch(process.env.VUE_APP_DJANGO_URL +'/results/', {
       method: 'post',
       headers: {
         Accept: 'application/json, text/plain, */*',
@@ -127,12 +105,20 @@ export default class Session extends Vue {
     }
     this.sequence++
     console.log(result)
-  }
-
+  },
+  doPause () {
+    this.paused = !this.paused
+    this.baseData = {
+      SetId: '',
+      TargetDrug: '',
+      TimeLimit: 0,
+      Ampoules: []
+    }
+  },
   getRemote () {
     this.loading = true
     return new Promise((resolve, reject) => {
-      fetch('https://mysterious-taiga-04569.herokuapp.com/getdrugs/?format=json&session_id=' + this.$route.params.SessionId)
+      fetch(process.env.VUE_APP_DJANGO_URL +'/getdrugs/?format=json&session_id=' + this.$route.params.SessionId)
         .then(response => {
           return response.json()
         })
@@ -141,12 +127,37 @@ export default class Session extends Vue {
           this.loading = false
           resolve()
         })
-        .catch((error: Error) => {
+        .catch((error) => {
           reject(error)
         })
     })
+  },
+
+  
+  },
+  
+
+  beforeMount () {
+    this.getRemote()
+  },
+  
+
+  // watch(paused, () =>  {
+  //   if (!this.paused) {
+  //     this.getRemote()
+  //   }
+  // })
+
+  /* get targetDrug () {
+    return this.baseData.TargetDrug
   }
-}
+
+  get ampoules () {
+    return this.baseData
+  } */
+
+})
+
 </script>
 
 <style scoped lang="scss">

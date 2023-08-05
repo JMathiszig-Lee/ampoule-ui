@@ -20,20 +20,27 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator'
+<script>
+// import { Vue } from 'vue-property-decorator'
 
-@Component
-export default class CountDown extends Vue {
-  @Prop() private timeLimit!: number;
-  @Prop() private timeLeft!: number;
+// import { Component, Prop, Vue } from 'vue-property-decorator'
+
+// @Component
+export default {
+  // @Prop() private timeLimit!: number;
+  // @Prop() private timeLeft!: number;
+  name: 'CountDown',
+  props: {
+    timeLimit: Number,
+    timeLeft: Number
+  },
 
   get timeLeftString () {
     if (this.timeLeft <= 0) {
       return '0.000'
     }
     return this.timeLeft.toFixed(3)
-  }
+  },
 
   get animationFraction () {
     const remaining = this.timeLeft * 1000
@@ -42,7 +49,7 @@ export default class CountDown extends Vue {
       return '283'
     }
     return (rawTimeFraction - (1 / this.timeLimit) * (1 - rawTimeFraction)) * 283 + ' 283'
-  }
+  },
 
   get animationColour () {
     const remaining = this.timeLeft

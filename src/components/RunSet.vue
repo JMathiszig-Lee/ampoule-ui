@@ -23,55 +23,59 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Vue, Prop, Component } from 'vue-property-decorator'
+<script>
 import CountDown from '@/components/CountDown.vue'
 import Ampoule from '@/components/Ampoule.vue'
 
-import { SetData, SetResult } from '@/types'
+// import { SetData, SetResult } from '@/types'
 
-@Component({
+// @Component({
+//   components: {
+//     CountDown,
+//     Ampoule
+//   }
+// })
+
+export default {
+  // @Prop() private setData!: SetData;
+  name: 'RunSet',
+  props:['setData'],
   components: {
     CountDown,
     Ampoule
-  }
-})
+  },
 
-export default class RunSet extends Vue {
-  @Prop() private setData!: SetData;
+  data() {
+    return {
+      loading : true,
+      active : false,
+      imgCount : 0,
+      timeLimit : 0,
+      startTime : 0,
+      timeLeft : 0,
+      tick : 0,
+    }
+  },
 
-  loading = true;
-  active = false;
-  imgCount = 0;
-  timeLimit = 0;
-  startTime = 0;
-  timeLeft = 0;
-  tick = 0;
-
-  beforeMount () {
-    this.timeLimit = this.setData.TimeLimit
-    this.timeLeft = this.timeLimit / 1000
-  }
-
-  startTimer (limit: number) {
+  
+  methods: {
+  startTimer (limit) {
     this.timeLimit = limit
     this.startTime = new Date().getTime()
     this.timeLeft = this.timeLimit / 1000
     this.tick = setInterval(() => {
       this.updateCountDown()
     }, 25)
-  }
-
+  },
   updateCountDown () {
-    const remaining: number = this.startTime + this.timeLimit - new Date().getTime()
+    const remaining = this.startTime + this.timeLimit - new Date().getTime()
     this.timeLeft = remaining / 1000
     if (remaining < 0) {
       this.active = false
       this.selectAmpoule('')
       clearInterval(this.tick)
     }
-  }
-
+  },
   imgLoaded () {
     this.imgCount++
     if (this.imgCount === this.setData.Ampoules.length) {
@@ -82,18 +86,25 @@ export default class RunSet extends Vue {
         this.imgCount = 0
       }, 1000)
     }
-  }
+  },
 
-  selectAmpoule (id: string) {
+  selectAmpoule (id) {
     clearInterval(this.tick)
     this.active = false
-    const result: SetResult = {
+    const result = {
       SetId: this.setData.SetId,
       SelectedAmpoule: id,
       Time: this.timeLimit - (this.timeLeft * 1000)
     }
     this.$emit('setResult', result)
   }
+  },
+
+  beforeMount () {
+    // debugger;
+    this.timeLimit = this.setData.TimeLimit
+    this.timeLeft = this.timeLimit / 1000
+  },
 }
 </script>
 

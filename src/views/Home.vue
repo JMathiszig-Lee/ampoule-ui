@@ -20,11 +20,11 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
+<script>
 
-@Component
-export default class Home extends Vue { }
+export default { 
+  name: 'Home'
+}
 
 </script>
 

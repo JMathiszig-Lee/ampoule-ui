@@ -13,29 +13,42 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator'
+<script >
 
-@Component
-export default class Ampoule extends Vue {
-  @Prop() private id!: string;
-  @Prop() private src!: string;
-  @Prop() private active!: boolean;
+// @Component
+export default {
+  // @Prop() private id!: string;
+  // @Prop() private src!: string;
+  // @Prop() private active!: boolean;
 
-  loading = true;
-  selected = false;
+  name: 'CountDown',
+  props: {
+    id: String,
+    src: String,
+    active: Boolean
+  },
 
-  onImgLoad () {
+  data() {
+    return {
+      loading: Boolean = true,
+      selected : Boolean = false,
+    }
+  },
+
+  methods: {
+    onImgLoad () {
     this.$emit('loaded', this.id)
     this.loading = false
-  }
+  },
 
   click () {
     if (this.active) {
       this.$emit('selected', this.id)
       this.selected = true
     }
+  },
   }
+  
 }
 </script>
 

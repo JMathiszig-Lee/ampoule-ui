@@ -1,75 +1,58 @@
 <template>
   <div class="start">
     <div>
-      <vue-form-generator
-        :schema="schema"
-        :model="model"
-        :options="formOptions"
-      ></vue-form-generator>
-      <router-link to="/session/1" tag="button" class="btn btn-success"
-        >Start</router-link
-      >
+      <FormKit type="form" @submit="createUser" >
+        <FormKitSchema :schema="schema"/>
+      </FormKit>
+      <!-- <router-link to="/session/1" tag="button" class="btn btn-success"
+        >Start</router-link> -->
     </div>
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
-import VueFormGenerator from 'vue-form-generator'
-import 'vue-form-generator/dist/vfg.css'
+<script setup>
+import { FormKitSchema, FormKit } from '@formkit/vue'
 
-@Component({
-  components: {
-    'vue-form-generator': VueFormGenerator.component
-  }
-})
+const axios = require('axios');
 
-export default class Start extends Vue {
-  model = {
-    years: '',
-    speciality: '',
-    email: ''
-  }
+const schema= [
+    {
+      $formkit: 'number',
+      name: 'years',
+      type: 'input',
+      inputType: 'Number',
+      label: 'Years of Experience',
+      validation: 'required|integer'
+    },
+    {
+      $formkit: 'select',
+      name: 'speciality',
+      label: 'Speciality',
+      options: [
+        { label: 'Anaesthetics', value: 'GAS' },
+        { label: 'Emergency Medicine', value: 'A+E' },
+        { label: 'Intensive Care', value: 'ICM' },
+        { label: 'Other', value: 'OTH' }
+      ],
+      validation: 'required'
+    },
+    {
+      $formkit: 'text',
+      label: 'E-mail',
+      name: 'email',
+      placeholder: 'E-mail address',
+      validation: 'required|email'
+    }
+  ]
 
-  schema = {
-    fields: [
-      {
-        type: 'input',
-        inputType: 'Number',
-        label: 'Years of Experience',
-        model: 'years',
-        required: true,
-        validator: 'integer'
-      },
-      {
-        type: 'select',
-        label: 'Speciality',
-        model: 'speciality',
-        values: [
-          { name: 'Anaesthetics', id: 'GAS' },
-          { name: 'Emergency Medicine', id: 'A+E' },
-          { name: 'Intensive Care', id: 'ICM' },
-          { name: 'Other', id: 'OTH' }
-        ],
-        required: true
-      },
-      {
-        type: 'input',
-        inputType: 'email',
-        label: 'E-mail',
-        model: 'email',
-        placeholder: 'E-mail address',
-        validator: 'email'
-      }
-    ]
-  }
+function createUser(fields) {
+  console.log(fields)
+  alert(JSON.stringify(fields)),
+  axios.post(process.env.VUE_APP_DJANGO_URL + '/register', {
 
-  formOptions = {
-    validateAfterLoad: true,
-    validateAfterChanged: true,
-    validateAsync: true
-  }
+  })
 }
+
 </script>
 
 <style lang="scss">
@@ -78,6 +61,6 @@ export default class Start extends Vue {
 }
 
 fieldset {
-  border: 0;
+  border: 10;
 }
 </style>
